@@ -2,6 +2,7 @@ package se.exuvo
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Calendar
+import java.io.File
 
 /**
  * Program för att läsa tidigare dagar och repetera dom
@@ -9,51 +10,48 @@ import java.util.Calendar
  * Användaren får skriva in ny dag med valfri text editor i botten av filen
  */
 object main {
-  val dateFormat = new SimpleDateFormat("yyy-MM-dd")
+  val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
   
   def help(){
     println("noob")
   }
   
-  def p(e : Entry){
-    println(dateFormat.format(e.date) + "\n" + e.text)
-  }
-  
   def p(bok: Dagbok, date: Date){
     println(dateFormat.format(date))
     bok.getByDate(date) match {
-      case Some(entry) => p(entry);
+      case Some(entry) => print(entry.text);
       case None => println("No entry")
     }
   }
 	
   def main(args: Array[String]) = {
+    var filename = "sdg.txt"
+      
     args.foreach(f => 
      f match {
       case "-h" | "--help" => help()
-      case _ =>
+      case f => if(new File(f).exists()) filename = f
     })
     
-//    val dagbok = Dagbok(args(args.length -1))
-    val d = Dagbok("sdg.txt")
-//    println(d.name + " contains " + d.entries.length + " entries")
-//    d.entries.foreach(e => p(e))
+    val d = Dagbok(filename)
+    println(d.name + " contains " + d.entries.length + " entries")
+//	  d.entries.foreach(e => println(dateFormat.format(e.date)) + "\n" + e.text)
     
     val day = Calendar.getInstance()
     day.setTime(new Date())
     
-    println("Todays entry:")
+    println("\nTodays entry:")
     p(d, day.getTime())
     
-    println("Yesterdays entry:")
+    println("\nYesterdays entry:")
     day.add(Calendar.DATE, -1)
     p(d, day.getTime())
     
-    println("Previous weeks entry:")
+    println("\nPrevious week entry:")
     day.add(Calendar.DATE, -6)
     p(d, day.getTime())
     
-    println("Previus month entry:")
+    println("\nPrevius month entry:")
     day.add(Calendar.DATE, -23)
     p(d, day.getTime())
   }

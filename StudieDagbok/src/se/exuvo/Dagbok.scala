@@ -21,7 +21,7 @@ object Dagbok{
 	  val source = scala.io.Source.fromFile(filename)
 	   
 	  val datePattern = "([0-9]{4}-[0-9]{1,2}-[0-9]{1,2})".r
-	  val dateFormat = new SimpleDateFormat("yyy-MM-dd")
+	  val dateFormat = new SimpleDateFormat("yyyy-MM-dd")
 	  var date: Date = null
 	  var text: StringBuilder = new StringBuilder(512);
 	  var entries: Array[Entry] = Array[Entry]()
@@ -34,7 +34,8 @@ object Dagbok{
 	      }
 	    	date = dateFormat.parse(d)
 	    }
-	    case t => text.append(t + "\n")
+	    case t if(!t.isEmpty() && !t.matches("[ ]+")) => text.append(t + "\n")
+	    case _ =>
 	  })
 	  if(text.length > 0) {
         entries = entries :+ new Entry(date, text.toString())
